@@ -12,13 +12,11 @@ using namespace std;
 class Node{
 public:
     Node* nextNode;
-    Node* prevNode;
     int value;
     
     Node(int value){
         this->value = value;
         nextNode = nullptr;
-        prevNode = nullptr;
     }
 };
 
@@ -33,12 +31,13 @@ public:
     int sizeOfList;
     int counter=0;
     
+    
     void add(int value, Node* node);
     void addNodeWithOutRec(int value);
     void showNode(Node* node);
-    void removeNode(int pos);
+    void removeNode(int pos, int counter);
     void get(int pos);
-    void addNode(int value, int index, Node* node);
+    void addNode(int value, int index);
     
 };
 
@@ -86,39 +85,33 @@ void LinkedList::showNode(Node* node){
 }
 
 //method which remove node via mentioned position
-void LinkedList::removeNode(int index)
-{
+void LinkedList::removeNode(int index, int counter=0){
     //case when position out of bound
     if (index < 0 || index > sizeOfList){
         cout<< "ERROR! OUT OF BOUND!"<<endl;
         return;
     }
-    //delete the first node
+    if (counter == 0){
+        currentNode = firstNode;
+    }
     if (index == 0){
-        Node *temp = firstNode;
         firstNode = firstNode->nextNode;
-        delete temp;
+        return;
     }
-    //delete last node
-    else if (index == sizeOfList){
-        currentNode = firstNode;
-        
-        while(currentNode->nextNode != nullptr){
-            prevNode = currentNode;
-            currentNode = currentNode->nextNode;
-        }
-        lastNode = prevNode;
-        prevNode->nextNode = nullptr;
+    else if (counter == index-1){
+        prevNode = currentNode;
+    }
+    if (counter == index){
+        prevNode->nextNode = currentNode->nextNode;
         delete currentNode;
-    }else{
-        //delete other nodes (any position)
-        currentNode = firstNode;
-        for(int i = 1;i < index;i++){
-            prevNode=currentNode;
-            currentNode=currentNode->nextNode;
-        }
-        prevNode->nextNode=currentNode->nextNode;
+        return;
     }
+    if (currentNode->nextNode == NULL){
+        return;
+    }
+    currentNode = currentNode->nextNode;
+    counter++;
+    removeNode(index, counter);
 }
 
 //method for getting value via selecte position of linked list
@@ -135,8 +128,8 @@ void LinkedList::get(int index) {
 }
 
 //method for inserting node by index
-void LinkedList::addNode(int value, int index, Node* node = nullptr){
-    if (index < 0 || index > sizeOfList-1) {
+void LinkedList::addNode(int value, int index){
+    if (index < 0 || index > sizeOfList) {
         cout << "ERROR! OUT OF BOUND" << endl;
         return;
     }
@@ -151,13 +144,13 @@ void LinkedList::addNode(int value, int index, Node* node = nullptr){
         counter = 0;
         return;
     }
-    if (currentNode->nextNode == NULL){
+    if (currentNode->nextNode == nullptr){
         addNodeWithOutRec(value);
         //add(value);
         return;
     }
     
-    else if(counter == index){
+    if(counter == index-1){
         tmpNode->nextNode = currentNode->nextNode;
         currentNode->nextNode = tmpNode;
         counter = 0;
@@ -166,7 +159,7 @@ void LinkedList::addNode(int value, int index, Node* node = nullptr){
     
     counter++;
     currentNode = currentNode->nextNode;
-    addNode(value, index, currentNode);
+    addNode(value, index);
     sizeOfList++;
 }
 
@@ -183,17 +176,16 @@ int main(int argc, const char * argv[]) {
     l.showNode(l.firstNode);
     cout<<endl;
     
-    l.removeNode(0);
-    l.showNode(l.firstNode);
-    //
     l.removeNode(6);
-    //l.removeNode(4);
+    l.showNode(l.firstNode);
+    
+    l.removeNode(0);
+    l.removeNode(4);
     cout<<endl;
-    //l.showNode(l.firstNode);
-    //
-    //l.get(2);
-    l.addNode(5, 6);
-    l.addNode(3, 0);
+    l.showNode(l.firstNode);
+    l.get(3);
+    //l.addNode(5, 4);
+    //l.addNode(3, 0);
     l.addNode(2, 3);
     
     //l.addNode(11, 11);
