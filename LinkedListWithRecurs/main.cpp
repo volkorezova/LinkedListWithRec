@@ -20,7 +20,6 @@ public:
     }
 };
 
-
 class LinkedList{
 public:
     Node* firstNode = nullptr;
@@ -36,7 +35,7 @@ public:
     void addNodeWithOutRec(int value);
     void showNode(Node* node);
     void removeNode(int pos, int counter);
-    void get(int pos);
+    void get(int pos, Node* node);
     void addNode(int value, int index);
     
 };
@@ -94,6 +93,7 @@ void LinkedList::removeNode(int index, int counter=0){
     if (counter == 0){
         currentNode = firstNode;
     }
+    
     if (index == 0){
         firstNode = firstNode->nextNode;
         return;
@@ -114,18 +114,26 @@ void LinkedList::removeNode(int index, int counter=0){
     removeNode(index, counter);
 }
 
+
+
 //method for getting value via selecte position of linked list
-void LinkedList::get(int index) {
+void LinkedList::get(int index, Node* node) {
+    
     if (index < 0 || index > sizeOfList) {
         cout<<"ERROR! OUT OF BOUND!"<<endl;
         return;
     }
-    Node *tmpNode = firstNode;
-    for (int i = 0; i < index; i++){
-        tmpNode = tmpNode->nextNode;
+    //display when we move index to zero (index is as counter to move through nodes)
+    if (index == 0) {
+        cout<<"Get value : "<<node->value<<endl;
     }
-    cout<<"Get value from position "<<index<<":"<<tmpNode->value<<endl;
+    else {
+        node = node->nextNode;
+        index--;
+        get(index, node);
+    }
 }
+
 
 //method for inserting node by index
 void LinkedList::addNode(int value, int index){
@@ -178,17 +186,16 @@ int main(int argc, const char * argv[]) {
     
     l.removeNode(6);
     l.showNode(l.firstNode);
-    
     l.removeNode(0);
     l.removeNode(4);
     cout<<endl;
     l.showNode(l.firstNode);
-    l.get(3);
-    //l.addNode(5, 4);
-    //l.addNode(3, 0);
+    l.get(2, l.firstNode);
+    //l.addNode(5, 6);
+    l.addNode(3, 0);
     l.addNode(2, 3);
     
-    //l.addNode(11, 11);
+    l.addNode(11, 11);
     cout<<endl;
     l.showNode(l.firstNode);
     return 0;
